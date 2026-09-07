@@ -50,7 +50,7 @@ What carries over from the MQTT plugin's design, despite the interface differenc
 └── template.go.mod                         # Baseline Go module file used by runme.sh
 ```
 
-Above tree shows all files after successful compilation. Upon `git clone` the 'build' directory will be empty because plugin binary and checksum have been moved to [Releases](https://github.com/balpak/zabbix-agent2-plugin-opcua/releases) page.
+Above tree shows all files after successful compilation. Upon `git clone` there will be no 'build' directory because plugin binary and checksum have been moved to [Releases](https://github.com/balpak/zabbix-agent2-plugin-opcua/releases) page.
 
 ## The metric key
 
@@ -86,12 +86,25 @@ Finally, the same source code has been compiled with go 1.25.14 on Ubuntu Server
 
 ## OPC UA interoperability tested
 
-Data collection has been tested against industrial and demo OPC UA Servers versions listed below:
+Data collection has been tested against multiple OPC UA Servers listed below:
 
-- Honeywell Experion R530.1
+### Demo
+
 - ProSys 5.5.2-362
 - UaExpert CPP 1.8.7.644
+
+### SCADA/DCS
+
+- Honeywell Experion R530.1
 - Emerson TankMaster OPC UA Connector 2.0.0.3501
+
+### Industrial Protocol Gateways
+
+- Cogent DataHub Version 11.0.5.1116
+
+### Intelligent Electronic Devices (IED)
+
+- RedLion DA30D (Crimson 3.1.3133.0)
 
 ## Quick build
 
@@ -111,19 +124,21 @@ For an end user building on the currently supported target the **`./runme.sh` is
 
 The script:
 
-1. Removes the generated/current `go.mod`, `go.sum` and previous plugin binary/checksum if present.
-2. Restores `go.mod` from `template.go.mod`.
-3. Fetches the pinned Zabbix Go SDK revision.
-4. Fetches the OPC UA Go dependency.
-5. Runs `go mod tidy`.
-6. Produces a statically linked Linux AMD64 executable named `zabbix-agent2-plugin-opcua` using `CGO_ENABLED=0 GOOS=linux GOARCH=amd64`.
-7. Generates executable's SHA256 checksum and verifies it.
+1. Creates output folder for binary if running for the first time after `git clone`
+2. Removes the generated/current `go.mod`, `go.sum` and previous plugin binary/checksum if present.
+3. Restores `go.mod` from `template.go.mod`.
+4. Fetches the pinned Zabbix Go SDK revision.
+5. Fetches the OPC UA Go dependency.
+6. Runs `go mod tidy`.
+7. Produces a statically linked Linux AMD64 executable named `zabbix-agent2-plugin-opcua` using `CGO_ENABLED=0 GOOS=linux GOARCH=amd64`.
+8. Generates executable's SHA256 checksum and verifies it.
 
-The example output shown below may vary depending on whether it is the first execution of the script or the recompilation of an existing binary file.
+The example output shown below may vary depending on whether it is the first execution of the script or recompilation of an existing binary file.
 
 ```bash
 $ ./runme.sh
 Building zabbix-agent2-plugin-opcua
+New folder 'build' created
 Old 'go.mod' deleted
 Old 'go.sum' deleted
 Old zabbix-agent2-plugin-opcua binary deleted
@@ -351,6 +366,20 @@ If a check is unsupported or fails:
 8. Run the item locally with `zabbix_agent2 -c ... -t ...` before testing from the server.
 9. Verify that the plugin SDK revision is compatible with the installed Zabbix agent2 version.
 
+## Future plans
+
+Test as many OPC UA Servers as possible.
+
+- ABB: 800xA
+- Aveva: Plant SCADA
+- Emerson: Delta-V
+- GE Vernova: CIMPLICITY
+- Inductive Automation: Ignition SCADA
+- Rockwell: FTView SE, PlantPAx
+- Schneider: Foxboro EcoStruxure, Wonderware
+- Siemens: WinCC, PCS 7, PCS Neo
+- Yokogawa: CENTRUM VP 
+
 
 ## Contributing
 
@@ -377,10 +406,12 @@ If you modify and redistribute the software, or operate a modified version in ci
 - [Zabbix Developer Center — Agent 2 plugins](https://www.zabbix.com/documentation/7.4/en/devel/plugins)
 - [Prosys OPC UA Simulation Server](https://prosysopc.com/products/opc-ua-simulation-server/)
 - [UA Expert Server and client](https://www.unified-automation.com/downloads.html)
+- [Cogent DataHub](http://www.cogentdatahub.com/)
+- [RedLion](https://www.hms-networks.com/home)
 - [GNU AGPLv3](https://www.gnu.org/licenses/agpl-3.0.html)
 
 ## Disclaimer
 
-This is an independent project unless explicitly stated otherwise. Zabbix is a trademark of Zabbix LLC. OPC UA is a technology of the OPC Foundation. Experion is a trademark owned by Honeywell International Inc. TankMaster is a trademark of Rosemount Tank Radar AB, subsidiary company operating under Emerson Electric Co.
+This is an independent project unless explicitly stated otherwise. Zabbix is a trademark of Zabbix LLC. OPC UA is a technology of the OPC Foundation.
 
-Product and company names are used only to identify interoperability / test environments.
+Products and company names are used only to identify interoperability / test environments.

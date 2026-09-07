@@ -4,6 +4,9 @@
 BUILDNAME=$(basename $(pwd))
 echo "Building $BUILDNAME"
 
+# Creating folder for binary if running script for the first time after 'git clone'
+[ ! -d "build" ] && mkdir build && echo "New folder 'build' created"
+
 # Clean-up
 [ -f go.mod ] && rm go.mod && echo "Old 'go.mod' deleted"
 [ -f go.sum ] && rm go.sum && echo "Old 'go.sum' deleted"
